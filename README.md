@@ -33,7 +33,7 @@ The system consists of two main contracts:
 - **Liquidation**: If a user's health factor drops below 1 (i.e., undercollateralized), other users can liquidate their position and profit from the difference.
 - **Fully On-Chain**: All operations, including liquidation, are handled entirely on-chain using Vyper smart contracts.
 
-![App screenshot](https://raw.githubusercontent.com/rafael-abuawad/bob-stablecoin/refs/heads/main/client/assets/images/screenshot.png "App")
+![App screenshot](https://raw.githubusercontent.com/rafael-abuawad/bob-stablecoin/refs/heads/main/assets/images/screenshot.png "App")
 
 ## **Contracts**
 
