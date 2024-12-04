@@ -18,16 +18,6 @@ from .interfaces import IToken
 from .interfaces import IAggregatorV3
 
 
-# @dev Returns the address of the underlying token
-# used for the protocl.
-asset: public(immutable(address))
-
-
-# @dev Stores the ERC-20 interface object of the underlying
-# token used for the protocol
-_ASSET: immutable(IERC20)
-
-
 # @dev Returns the address of the underlying custom token
 # used for the protocl.
 stablecoin: public(immutable(address))
@@ -129,12 +119,11 @@ exports: ow.__interface__
 
 @deploy
 @payable
-def __init__(stablecoin_: IToken, asset_: IERC20, oracle_: IAggregatorV3):
+def __init__(stablecoin_: IToken, oracle_: IAggregatorV3):
     """
     @dev To omit the opcodes for checking the `msg.value`
          in the creation-time EVM bytecode, the constructor
          is declared as `payable`.
-    @param asset_ The IToken compatible underlying asset contract.
     @param oracle_ The address of the Chainlink Aggregator V3 oracle contract
            used to provide price feed data for the application.
     @notice The `owner` role will be assigned to
@@ -142,9 +131,6 @@ def __init__(stablecoin_: IToken, asset_: IERC20, oracle_: IAggregatorV3):
     """
     _STABLECOIN = stablecoin_
     stablecoin = _STABLECOIN.address
-
-    _ASSET = asset_
-    asset = _ASSET.address
 
     _ORACLE = oracle_
     oracle = _ORACLE.address
@@ -281,14 +267,12 @@ def _deposit_collateral(amount: uint256):
     self.collateralDeposited[msg.sender] += amount
     log CollateralDeposited(msg.sender, amount)
 
-    success: bool = extcall _ASSET.transferFrom(msg.sender, self, amount)
-    assert success, "engine: transferFrom failed"
-
 
 @external
+@payable
 @nonreentrant
-def deposit_collateral(amount: uint256):
-    self._deposit_collateral(amount)
+def deposit_collateral():
+    self._deposit_collateral(msg.value)
 
 
 @internal
@@ -330,9 +314,7 @@ def deposit_collateral_and_mint_bobc(
 def _redeem_collateral(amount: uint256, from_: address, to: address):
     self.collateralDeposited[from_] -= amount
     log CollateralRedeemed(from_, to, amount)
-    
-    success: bool = extcall _ASSET.transfer(to, amount)
-    assert success, "engine: tranfers failed"
+    send(to, amount) 
 
 
 @internal
@@ -390,3 +372,9 @@ def liquidate(user: address, debtToCover: uint256):
     assert endingUserHealthFactor > startingUserHealthFactor, "engine: health factor not improved"
 
     self._revert_if_health_factor_is_broken(msg.sender)
+
+
+@external
+@payable
+def __default__():
+    self._deposit_collateral(msg.value)
