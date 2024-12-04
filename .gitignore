@@ -8,4 +8,5 @@
 .pytest_cache
 .python-version
 .ruff_cache
+.hypothesis
 __pycache__

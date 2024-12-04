@@ -5,6 +5,7 @@ description = "Overcollateralized algorithmic stablecoin pegged to the BOB backe
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "hypothesis>=6.122.1",
     "pytest>=8.3.4",
     "ruff>=0.8.1",
     "snekmate>=0.1.0",

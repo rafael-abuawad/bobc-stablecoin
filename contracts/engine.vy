@@ -1,6 +1,6 @@
 # pragma version ~=0.4.0
 """
-@title `BOBC Engine` Overcollateralized BOBC stablecoin
+@title `BOBC Engine` Overcollateralized BOBC Stablecoin
 @custom:contract-name engine
 @license GNU Affero General Public License v3.0 only
 @author rabuawad

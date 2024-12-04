@@ -1,4 +1,6 @@
 import boa
+from hypothesis import given
+from hypothesis.strategies import integers, composite
 
 
 def test_initial_setup(engine, oracle, stablecoin):
@@ -104,3 +106,61 @@ def test_liquidation(accounts, engine):
     for account in accounts:
         with boa.reverts():
             engine.liquidate(account, collateral_to_cover, sender=account)
+
+
+def test_zero_deposit(engine, accounts):
+    initial_balance = boa.env.get_balance(engine.address)
+    for account in accounts:
+        with boa.reverts():
+            engine.deposit_collateral(value=0, sender=account)
+        assert boa.env.get_balance(engine.address) == initial_balance
+
+
+def test_mint_beyond_limit(accounts, engine):
+    amount = int(1.5e18)
+    for account in accounts:
+        engine.deposit_collateral(value=amount, sender=account)
+        collateral = engine.get_bob_value(amount)
+        max_mintable = int(collateral * 0.50)
+
+        with boa.reverts():
+            engine.mint_bobc(max_mintable + 1, sender=account)
+
+
+def test_health_factor_after_mint(accounts, engine):
+    deposit_amount = int(1e18)
+    mint_amount = int(0.4e18)
+    for account in accounts:
+        engine.deposit_collateral(value=deposit_amount, sender=account)
+        initial_health = engine.health_factor(account)
+        engine.mint_bobc(mint_amount, sender=account)
+        new_health = engine.health_factor(account)
+        assert new_health < initial_health
+
+
+def test_account_information(accounts, engine):
+    deposit_amount = int(1e18)
+    deposit_amount_in_bobc = engine.get_bob_value(deposit_amount)
+    for account in accounts:
+        engine.deposit_collateral(value=deposit_amount, sender=account)
+        (minted, collateral) = engine.get_account_information(account)
+        assert minted == 0
+        assert collateral == deposit_amount_in_bobc
+
+
+def test_liquidation_trigger(accounts, engine):
+    deposit_amount = int(1e18)
+    mint_amount = int(0.6e18)  # Intentionally breaking health factor
+
+    for account in accounts:
+        engine.deposit_collateral(value=deposit_amount, sender=account)
+        engine.mint_bobc(mint_amount, sender=account)
+
+        with boa.reverts():
+            engine.liquidate(account, int(0.2e18), sender=account)
+
+
+def test_redeem_without_deposit(accounts, engine):
+    for account in accounts:
+        with boa.reverts():
+            engine.redeem_collateral(int(1e18), sender=account)
