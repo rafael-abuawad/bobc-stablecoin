@@ -1,4 +1,4 @@
-![BOBC Protocol banner](https://raw.githubusercontent.com/rafael-abuawad/bob-stablecoin/refs/heads/main/client/assets/images/banner.png "BOBC")
+![BOBC Protocol banner](https://raw.githubusercontent.com/rafael-abuawad/bob-stablecoin/refs/heads/main/assets/images/banner.png "BOBC")
 
 ### **Overcollateralized Stablecoin Pegged to BOB**
 
