@@ -1,10 +1,10 @@
-import ape
+import boa
 
 
 def test_initial_setup(engine, asset, oracle, stablecoin):
     # Check the contract instances from the fixture
-    assert asset == engine.asset()
-    assert oracle == engine.oracle()
+    assert asset.address == engine.asset()
+    assert oracle.address == engine.oracle()
     assert stablecoin.address == engine.stablecoin()
 
 
@@ -60,7 +60,7 @@ def test_deposit_collateral_and_mint_bobc(accounts, owner, asset, stablecoin, en
         print("Health factor", engine.health_factor(account))
         print("Account information", engine.get_account_information(account))
 
-        with ape.reverts():
+        with boa.reverts():
             engine.mint_bobc(breaks_health_factor, sender=account)
 
 
@@ -112,12 +112,12 @@ def test_remove_collateral(accounts, owner, asset, stablecoin, engine):
         new_initial_balance = asset.balanceOf(account)
         assert new_initial_balance == initial_balance
 
-        with ape.reverts():
+        with boa.reverts():
             engine.mint_bobc(accesible_collateral, sender=account)
 
 
 def test_liquidation(accounts, engine):
     collateral_to_cover = int(20e18)  # Cover 20 ether worth of collateral
     for account in accounts:
-        with ape.reverts():
+        with boa.reverts():
             engine.liquidate(account, collateral_to_cover, sender=account)

@@ -1,6 +1,6 @@
 # pragma version ~=0.4.0
 """
-@title `BOBC Engine` Overcollateralized BOB stablecoin
+@title `BOBC Engine` Overcollateralized BOBC stablecoin
 @custom:contract-name engine
 @license GNU Affero General Public License v3.0 only
 @author rabuawad
@@ -88,10 +88,10 @@ ADDITIONAL_FEED_PRECISION: constant(uint256) = 10**10
 FEED_PRECISION: constant(uint256) = 10**8
 
 
-# @dev Conversion rate between 1 USD and 1 BOB.
+# @dev Conversion rate between 1 USD and BOB.
 # @notice This constant represents the fixed conversion rate,
-# where 1 USD is equivalent to 7 BOB.
-CONVERSION_RATE: constant(int256) = 7
+# where 1 USD is equivalent to 10 BOB.
+CONVERSION_RATE: constant(int256) = 10
 
 
 # @dev Mapping of the amount of collateral deposited
