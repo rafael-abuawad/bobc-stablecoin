@@ -23,25 +23,34 @@ def owner():
 @pytest.fixture(scope="module")
 def asset(owner):
     with boa.env.prank(owner):
-        return boa.load("contracts/token.vy", "Wrapped ETH", "WETH", 18, "wrapped-eth", "0.0.1") 
+        return boa.load(
+            "contracts/token.vy", "Wrapped ETH", "WETH", 18, "wrapped-eth", "0.0.1"
+        )
 
 
 @pytest.fixture(scope="module")
 def oracle(owner):
     with boa.env.prank(owner):
-        return boa.load("tests/mocks/mock_v3_aggregator.vy", 8, int(2000e8)) 
+        return boa.load("tests/mocks/mock_v3_aggregator.vy", 8, int(2000e8))
 
 
 @pytest.fixture(scope="module")
 def stablecoin(owner):
     with boa.env.prank(owner):
-        return boa.load("contracts/token.vy", "Collateralized BOB", "CBOB", 18, "collateralized-bob", "0.0.1") 
+        return boa.load(
+            "contracts/token.vy",
+            "Collateralized BOB",
+            "CBOB",
+            18,
+            "collateralized-bob",
+            "0.0.1",
+        )
 
 
 @pytest.fixture(scope="module")
 def engine(stablecoin, asset, oracle, owner):
     with boa.env.prank(owner):
-        engine =  boa.load("contracts/engine.vy", stablecoin, asset, oracle) 
+        engine = boa.load("contracts/engine.vy", stablecoin, asset, oracle)
         stablecoin.set_minter(engine, True)
         stablecoin.renounce_ownership()
         return engine
